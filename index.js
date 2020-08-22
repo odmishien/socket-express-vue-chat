@@ -11,13 +11,11 @@ app.get("/", function (req, res) {
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
     let message = JSON.parse(msg);
-    console.log(message);
     socket.join(message.room);
     io.to(message.room).emit("chat message", message.content);
   });
   socket.once("join room", () => {
     let room = rooms[Math.floor(Math.random() * 2)];
-    console.log(room);
     io.to(socket.id).emit("room notification", room);
   });
 });

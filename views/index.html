@@ -77,7 +77,6 @@
             content: this.textInput,
             room: this.roomName,
           };
-          console.log(message);
           socket.emit("chat message", JSON.stringify(message));
           this.textInput = "";
         },
