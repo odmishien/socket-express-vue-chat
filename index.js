@@ -1,12 +1,28 @@
-var app = require("express")();
-var server = require("http").Server(app);
-var io = require("socket.io")(server);
+const express = require("express");
 
 let rooms = ["room1", "room2"];
 
-app.get("/", function (req, res) {
+const app = express();
+
+app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
+
+app.get("/error", (req, res, next) => {
+  try {
+    throw new Error("BROKEN");
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.use((err, req, res, next) => {
+  console.error("custom error handler!");
+  res.status(500).send("Something broke!");
+});
+
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
